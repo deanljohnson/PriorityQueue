@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard1.0</TargetFrameworks>
+		<Title>PriorityQueue</Title>
+		<Version>1.0</Version>
+		<Copyright>Copyright 2017 Dean Johnson</Copyright>
+		<Description>.net priority queue</Description>
+		<Authors>Dean Johnson</Authors>
+		<AssemblyVersion>1.0</AssemblyVersion>
+	</PropertyGroup>
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
+</Project>

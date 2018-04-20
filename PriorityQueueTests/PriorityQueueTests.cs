@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -193,6 +194,21 @@ namespace PriorityQueueTests
             queue.Clear();
             Assert.AreEqual(0, queue.Count);
             Assert.AreEqual(default(TestData), queue.PeekLast()); // Verify nulling of last item
+        }
+
+        [TestMethod]
+        public void EnumerationTest()
+        {
+            HashSet<TestData> data = new HashSet<TestData>();
+            for (int i = 0; i < 1000; i++) data.Add(new TestData());
+
+            var queue = new PriorityQueue<TestData>();
+            foreach (var d in data) queue.Enqueue(d, 0);
+
+            foreach (object dataItem in (IEnumerable)queue)
+            {
+                Assert.IsTrue(data.Contains((TestData)dataItem));
+            }
         }
 
         [TestMethod]

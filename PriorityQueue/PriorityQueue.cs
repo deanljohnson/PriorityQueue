@@ -11,7 +11,8 @@ namespace PriorityQueue
         {
             public int Compare(double x, double y)
             {
-                return (int)Math.Ceiling(x - y);
+                double dif = x - y;
+                return (int)(dif < 0 ? Math.Floor(dif) : Math.Ceiling(dif));
             }
         }
 
@@ -19,7 +20,8 @@ namespace PriorityQueue
         {
             public int Compare(double x, double y)
             {
-                return (int)Math.Ceiling(y - x);
+                double dif = y - x;
+                return (int)(dif < 0 ? Math.Floor(dif) : Math.Ceiling(dif));
             }
         }
 
@@ -80,15 +82,11 @@ namespace PriorityQueue
             m_Comparer = priorityComparer;
         }
 
-#if NET_VERSION_4_5
+        #if NET_VERSION_4_5
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         #endif
         public void Enqueue(TItem item, double priority)
         {
-#if DEBUG
-            if (m_Priorities.ContainsKey(item))
-                throw new ArgumentException("The PriorityQueue already contains this item");
-#endif
             ItemRecord record = new ItemRecord(m_Data.Count, item, priority);
             m_Data.Add(record);
             m_ItemRecordsMap[item] = record;
@@ -167,11 +165,6 @@ namespace PriorityQueue
         #endif
         public void SetPriority(TItem item, double priority)
         {
-            #if DEBUG
-            if (!m_Priorities.ContainsKey(item))
-                throw new InvalidOperationException("The PriorityQueue does not contain the given item");
-            #endif
-
             ItemRecord record = m_ItemRecordsMap[item];
             record.Priority = priority;
             if (priority > m_LastItem.Priority)

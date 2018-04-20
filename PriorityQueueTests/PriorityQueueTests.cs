@@ -69,33 +69,56 @@ namespace PriorityQueueTests
         [TestMethod]
         public void SetPriorityTest()
         {
-            var pq = new PriorityQueue<TestData>();
-            var items = new List<TestData>();
             var dict = new Dictionary<TestData, double>();
-            var random = new Random();
 
-            for (var i = 0; i < 10000; i++)
+            var initQueue = new Action<PriorityQueue<TestData>>((pq) =>
             {
-                items.Add(new TestData());
-                pq.Enqueue(items[i], i);
-            }
+                var items = new List<TestData>();
+                var random = new Random();
 
-            for (var i = 0; i < 10000; i++)
-            {
-                var p = random.NextDouble() * 10000.0;
-                dict.Add(items[i], p);
-                pq.SetPriority(items[i], p);
-            }
+                for (var i = 0; i < 10000; i++)
+                {
+                    items.Add(new TestData());
+                    pq.Enqueue(items[i], i);
+                }
 
-            var lastItemPriority = pq.GetPriority(pq.Peek());
-            var lastItem = pq.Dequeue();
+                for (var i = 0; i < 10000; i++)
+                {
+                    var p = random.NextDouble() * 10000.0;
+                    dict.Add(items[i], p);
+
+                    pq.SetPriority(items[i], p);
+                }
+            });
+
+            // Test minimum queue (default)
+            var minQueue = new PriorityQueue<TestData>();
+            initQueue(minQueue);
+            var lastItemPriority = minQueue.GetPriority(minQueue.Peek());
+            var lastItem = minQueue.Dequeue();
             Assert.IsNotNull(lastItem);
-            while (pq.Count > 0)
+            while (minQueue.Count > 0)
             {
-                var nextItemPriority = pq.GetPriority(pq.Peek());
-                var nextItem = pq.Dequeue();
+                var nextItemPriority = minQueue.GetPriority(minQueue.Peek());
+                var nextItem = minQueue.Dequeue();
                 Assert.IsNotNull(nextItem);
-                Assert.IsTrue(lastItemPriority <= nextItemPriority);
+                Assert.IsTrue(lastItemPriority <= nextItemPriority, $"{lastItemPriority} <= {nextItemPriority}");
+                Assert.AreEqual(nextItemPriority, dict[nextItem]);
+            }
+
+            // Test maximum queue
+            dict.Clear();
+            var maxQueue = new PriorityQueue<TestData>(true);
+            initQueue(maxQueue);
+            lastItemPriority = maxQueue.GetPriority(maxQueue.Peek());
+            lastItem = maxQueue.Dequeue();
+            Assert.IsNotNull(lastItem);
+            while (maxQueue.Count > 0)
+            {
+                var nextItemPriority = maxQueue.GetPriority(maxQueue.Peek());
+                var nextItem = maxQueue.Dequeue();
+                Assert.IsNotNull(nextItem);
+                Assert.IsTrue(lastItemPriority >= nextItemPriority, $"{lastItemPriority} <= {nextItemPriority}");
                 Assert.AreEqual(nextItemPriority, dict[nextItem]);
             }
         }

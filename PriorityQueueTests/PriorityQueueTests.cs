@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PriorityQueue;
 
@@ -121,6 +122,34 @@ namespace PriorityQueueTests
                 Assert.IsTrue(lastItemPriority >= nextItemPriority, $"{lastItemPriority} <= {nextItemPriority}");
                 Assert.AreEqual(nextItemPriority, dict[nextItem]);
             }
+        }
+
+        [TestMethod]
+        public void EmptyQueueTests()
+        {
+#if DEBUG
+            var queue = new PriorityQueue<TestData>();
+            AssertThrows<InvalidOperationException>(() => queue.Peek());
+            AssertThrows<InvalidOperationException>(() => queue.Dequeue());
+#endif
+        }
+
+        internal static void AssertThrows<TException>(Action method)
+            where TException : Exception
+        {
+            try
+            {
+                method.Invoke();
+            }
+            catch (TException)
+            {
+                return; // Expected exception.
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Wrong exception thrown: " + ex.Message);
+            }
+            Assert.Fail("No exception thrown");
         }
     }
 }

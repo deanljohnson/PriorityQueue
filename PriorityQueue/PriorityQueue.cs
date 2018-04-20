@@ -147,7 +147,9 @@ namespace PriorityQueue
         /// </summary>
         public TItem PeekLast()
         {
-            return m_LastItem.Item;
+            return m_LastItem == null 
+                ? default(TItem) 
+                : m_LastItem.Item;
         }
 
         #if NET_VERSION_4_5

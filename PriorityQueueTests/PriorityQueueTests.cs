@@ -125,6 +125,77 @@ namespace PriorityQueueTests
         }
 
         [TestMethod]
+        public void PeekLastTest()
+        {
+            // Min queue tests
+            var queue = new PriorityQueue<TestData>();
+
+            // Nothing in queue
+            Assert.AreEqual(default(TestData), queue.PeekLast());
+
+            var one = new TestData();
+            var five = new TestData();
+            var ten = new TestData();
+
+            // Enqueue order one
+            queue.Enqueue(one, 1);
+            queue.Enqueue(five, 5);
+            queue.Enqueue(ten, 10);
+            Assert.AreEqual(ten, queue.PeekLast());
+            queue.Clear();
+
+            // Enqueue order two
+            queue.Enqueue(ten, 10);
+            queue.Enqueue(five, 5);
+            queue.Enqueue(one, 1);
+            Assert.AreEqual(ten, queue.PeekLast());
+            queue.Clear();
+
+            // Max queue tests
+            queue = new PriorityQueue<TestData>(true);
+
+            // Enqueue order one
+            queue.Enqueue(one, 1);
+            queue.Enqueue(five, 5);
+            queue.Enqueue(ten, 10);
+            Assert.AreEqual(one, queue.PeekLast());
+            queue.Clear();
+
+            // Enqueue order two
+            queue.Enqueue(ten, 10);
+            queue.Enqueue(five, 5);
+            queue.Enqueue(one, 1);
+            Assert.AreEqual(one, queue.PeekLast());
+            queue.Clear();
+        }
+
+        [TestMethod]
+        public void ClearTest()
+        {
+            var queue = new PriorityQueue<TestData>();
+
+            // Make sure empty queue doesn't cause a problem
+            queue.Clear();
+
+            // Single object enqueued
+            queue.Enqueue(new TestData(), 10);
+            Assert.AreEqual(1, queue.Count);
+            Assert.AreNotEqual(default(TestData), queue.PeekLast());
+            queue.Clear();
+            Assert.AreEqual(0, queue.Count);
+            Assert.AreEqual(default(TestData), queue.PeekLast()); // Verify nulling of last item
+
+            // Many objects enqueued
+            for (int i = 0; i < 1000; i++)
+                queue.Enqueue(new TestData(), 10);
+            Assert.AreEqual(1000, queue.Count);
+            Assert.AreNotEqual(default(TestData), queue.PeekLast());
+            queue.Clear();
+            Assert.AreEqual(0, queue.Count);
+            Assert.AreEqual(default(TestData), queue.PeekLast()); // Verify nulling of last item
+        }
+
+        [TestMethod]
         public void EmptyQueueTests()
         {
 #if DEBUG
